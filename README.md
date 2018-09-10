@@ -1,0 +1,1 @@
+# Capacitor-NFC-Plugin
