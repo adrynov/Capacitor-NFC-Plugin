@@ -14,7 +14,7 @@ declare global {
  *
  * This plugin uses NDEF (NFC Data Exchange Format) for maximum compatibilty between NFC devices, tag types, and operating systems.
  */
-export interface NFCPlugin extends Plugin {
+export interface NFCPlugin {
     /**
      * Simply returns a value that it was given.
      * Learning how to create a Capacitor plugin.
@@ -29,6 +29,10 @@ export interface NFCPlugin extends Plugin {
      */
     getStatus(): Promise<NfcStatus>;
     /**
+     * Return information about the underlying tag technology.
+     */
+    getTagInfo(): Promise<TagInfo>;
+    /**
      * Opens the device’s NFC settings.
      */
     showSettings(): Promise<void>;
@@ -36,130 +40,124 @@ export interface NFCPlugin extends Plugin {
 export interface NfcStatus {
     status: 'ok' | 'disabled' | 'none';
 }
+export interface TagInfo {
+    /**
+    * The UUID of the attached NFC tag.
+    */
+    id: string;
+    /**
+    * The manufacturer of the NFC tag.
+    */
+    manufacturer?: string;
+}
 /**
  *
-import { NFC } from 'capacitor-nfc';
+ Pending items:
 
-NFC.addNdefListener(() => {
-  console.log('successfully attached ndef listener');
-}, (err) => {
-  console.log('error attaching ndef listener', err);
-}).subscribe((event) => {
-  console.log('received ndef message. the tag contains: ', event.tag);
-  console.log('decoded tag id', this.nfc.bytesToHexString(event.tag.id));
+    Instance Members
+    beginSession(onSuccess, onFailure)
+    Starts the NFCNDEFReaderSession allowing iOS to scan NFC tags.
 
-  let message = this.ndef.textRecord('Hello world');
-  this.nfc.share([message]).then(onSuccess).catch(onError);
-});
+    Param	Type	Details
+    onSuccess
+    onFailure
+    Returns: Observable<any>
 
+    addNdefListener(onSuccess, onFailure)
+    Registers an event listener for any NDEF tag.
 
-Instance Members
-beginSession(onSuccess, onFailure)
-Starts the NFCNDEFReaderSession allowing iOS to scan NFC tags.
+    Param	Type	Details
+    onSuccess
+    onFailure
+    Returns: Observable<any>
 
-Param	Type	Details
-onSuccess
-onFailure
-Returns: Observable<any>
+    addTagDiscoveredListener(onSuccess, onFailure)
+    Registers an event listener for tags matching any tag type.
 
-addNdefListener(onSuccess, onFailure)
-Registers an event listener for any NDEF tag.
+    Param	Type	Details
+    onSuccess
+    onFailure
+    Returns: Observable<any>
 
-Param	Type	Details
-onSuccess
-onFailure
-Returns: Observable<any>
+    addMimeTypeListener(mimeType, onSuccess, onFailure)
+    Registers an event listener for NDEF tags matching a specified MIME type.
 
-addTagDiscoveredListener(onSuccess, onFailure)
-Registers an event listener for tags matching any tag type.
+    Param	Type	Details
+    mimeType
+    onSuccess
+    onFailure
+    Returns: Observable<any>
 
-Param	Type	Details
-onSuccess
-onFailure
-Returns: Observable<any>
+    addNdefFormatableListener(onSuccess, onFailure)
+    Registers an event listener for formatable NDEF tags.
 
-addMimeTypeListener(mimeType, onSuccess, onFailure)
-Registers an event listener for NDEF tags matching a specified MIME type.
+    Param	Type	Details
+    onSuccess
+    onFailure
+    Returns: Observable<any>
 
-Param	Type	Details
-mimeType
-onSuccess
-onFailure
-Returns: Observable<any>
+    write(message)
+    Writes an NdefMessage(array of ndef records) to a NFC tag.
 
-addNdefFormatableListener(onSuccess, onFailure)
-Registers an event listener for formatable NDEF tags.
+    Param	Type	Details
+    message	any[]
+    Returns: Promise<any>
 
-Param	Type	Details
-onSuccess
-onFailure
-Returns: Observable<any>
+    makeReadyOnly()
+    Makes a NFC tag read only. Warning this is permanent.
 
-write(message)
-Writes an NdefMessage(array of ndef records) to a NFC tag.
+    Returns: Promise<any>
 
-Param	Type	Details
-message	any[]
-Returns: Promise<any>
+    share(message)
+    Shares an NDEF Message(array of ndef records) via peer-to-peer.
 
-makeReadyOnly()
-Makes a NFC tag read only. Warning this is permanent.
+    Param	Type	Details
+    message
+    An array of NDEF Records.
 
-Returns: Promise<any>
+    Returns: Promise<any>
 
-share(message)
-Shares an NDEF Message(array of ndef records) via peer-to-peer.
+    unshare()
+    Stop sharing NDEF data via peer-to-peer.
 
-Param	Type	Details
-message
-An array of NDEF Records.
+    Returns: Promise<any>
 
-Returns: Promise<any>
+    erase()
+    Erase a NDEF tag
 
-unshare()
-Stop sharing NDEF data via peer-to-peer.
+    handover(uris)
+    Send a file to another device via NFC handover.
 
-Returns: Promise<any>
+    Param	Type	Details
+    uris
+    A URI as a String, or an array of URIs.
 
-erase()
-Erase a NDEF tag
+    Returns: Promise<any>
 
-handover(uris)
-Send a file to another device via NFC handover.
+    stopHandover()
+    Stop sharing NDEF data via NFC handover.
 
-Param	Type	Details
-uris
-A URI as a String, or an array of URIs.
-
-Returns: Promise<any>
-
-stopHandover()
-Stop sharing NDEF data via NFC handover.
-
-Returns: Promise<any>
+    Returns: Promise<any>
 
 
-enabled()
-Check if NFC is available and enabled on this device.
+    enabled()
+    Check if NFC is available and enabled on this device.
 
-Returns: Promise<any>
+    Returns: Promise<any>
 
-bytesToString(bytes)
-Param	Type	Details
-bytes	number[]
-Returns: string
+    bytesToString(bytes)
+    Param	Type	Details
+    bytes	number[]
+    Returns: string
 
-stringToBytes(str)
-Convert string to byte array.
+    stringToBytes(str)
+    Convert string to byte array.
 
-Param	Type	Details
-str	string
-Returns: number[]
+    Param	Type	Details
+    str	string
+    Returns: number[]
 
-bytesToHexString(bytes)
-Convert byte array to hex string
+    bytesToHexString(bytes)
+    Convert byte array to hex string
 
-Param	Type	Details
-bytes	number[]
-Retu
  */

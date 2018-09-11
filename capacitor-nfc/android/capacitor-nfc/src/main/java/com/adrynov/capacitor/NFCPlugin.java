@@ -84,6 +84,18 @@ public class NFCPlugin extends Plugin {
     }
 
     /**
+     * Return information about the underlying tag technology.
+     */
+    @PluginMethod()
+    public void getTagInfo(PluginCall call) {
+        JSObject ret = new JSObject();
+        ret.put("manufacturer", android.os.Build.MANUFACTURER);
+        ret.put("uuid", "TODO: NFC Card tag id");
+
+        call.success(ret);
+    }
+
+    /**
      * Opens the device’s NFC settings.
      */
     @PluginMethod()
@@ -119,6 +131,5 @@ public class NFCPlugin extends Plugin {
             return STATUS_NFC_OK;
         }
     }
-
 
 }
