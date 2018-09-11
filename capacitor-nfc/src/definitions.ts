@@ -15,7 +15,13 @@ declare global {
  *
  * This plugin uses NDEF (NFC Data Exchange Format) for maximum compatibilty between NFC devices, tag types, and operating systems.
  */
-export interface NFCPlugin {
+export interface NFCPlugin extends Plugin {
+  /**
+   * Simply returns a value that it was given.
+   * Learning how to create a Capacitor plugin.
+   */
+  echo(options: { value: string }): Promise<{ value: string }>;
+
   /**
    * Query the current NFC status.
    */

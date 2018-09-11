@@ -1,20 +1,31 @@
-// import { WebPlugin } from '@capacitor/core';
-// import { NFCPlugin } from './definitions';
+import { WebPlugin } from '@capacitor/core';
+import { NfcStatus } from './definitions';
 
-// export class NFCPluginWeb extends WebPlugin implements NFCPlugin {
-//   constructor() {
-//     super({
-//       name: 'NFCPlugin',
-//       platforms: ['web']
-//     });
-//   }
+export class NFCPluginWeb extends WebPlugin {
 
-//   async echo(options: { value: string }): Promise<{value: string}> {
-//     console.log('ECHO', options);
-//     return Promise.resolve({ value: options.value });
-//   }
-// }
+    constructor() {
+        super({
+            name: 'NFC',
+            platforms: ['web']
+        });
+    }
 
-// const NFCPlugin = new NFCPluginWeb();
+    async echo(options: { value: string }): Promise<{ value: string }> {
+        console.log('ECHO', options);
+        return Promise.resolve({ value: options.value });
+    }
 
-// export { NFCPlugin };
+    getStatus(): Promise<NfcStatus | any> {
+        return Promise.resolve('none');
+    }
+
+    showSettings(): Promise<void> {
+        return Promise.resolve();
+    }
+}
+
+// Instantiate the plugin
+const NFC = new NFCPluginWeb();
+
+// Export the plugin
+export { NFC };
