@@ -16,10 +16,6 @@ Show the NFC settings on the device.
 
     NFC.showSettings();
 
-### Description
-
-Function `showSettings` opens the NFC settings for the operating system.
-
 ### Supported Platforms
 
 - Android
