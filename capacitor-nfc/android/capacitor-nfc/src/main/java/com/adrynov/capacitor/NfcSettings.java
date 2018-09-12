@@ -34,7 +34,7 @@ public class NfcSettings {
         this.enableNdef = enableNdef;
     }
 
-    public boolean ddefFormattableEnabled() {
+    public boolean ndefFormattableEnabled() {
         return enableNdefFormattable;
     }
 

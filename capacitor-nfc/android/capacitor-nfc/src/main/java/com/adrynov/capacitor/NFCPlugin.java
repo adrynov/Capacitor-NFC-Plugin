@@ -10,7 +10,6 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.nfc.tech.TagTechnology;
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.getcapacitor.JSObject;
@@ -26,7 +25,7 @@ import java.util.List;
 
 /**
  * This NFC plugin allows to read (and in future write) NFC tags.
- * Version 0.0.9
+ * Version 0.0.10
  */
 @NativePlugin(permissions = { Manifest.permission.NFC })
 public class NFCPlugin extends Plugin {
@@ -35,9 +34,10 @@ public class NFCPlugin extends Plugin {
 
     private static final String PERMISSION_NOT_SET = Manifest.permission.NFC + " permission is not set in AndroidManifest.xml";
 
-    public static final String NFC_TAG_SCAN_EVENT = "NFC_TAG_SCANNED";
-    public static final String NFC_NDEF_SCAN_EVENT = "NFC_NDEF_SCANNED";
-    public static final String NFC_NDEF_FORMATTED_SCAN_EVENT = "NFC_NDEF_FORMATTED_SCANNED";
+    public static final String EVENT_TAG_DISCOVERED = "TAG_DISCOVERED";
+    public static final String EVENT_TECH_DISCOVERED = "TECH_DISCOVERED";
+    public static final String EVENT_NDEF_DISCOVERED = "NDEF_DISCOVERED";
+    public static final String EVENT_NDEF_FORMATTABLE_DISCOVERED = "NDEF_FORMATTABLE_DISCOVERED";
 
     private static final String ACTION_SHOW_SETTINGS = "SHOW_SETTINGS";
 
@@ -73,6 +73,7 @@ public class NFCPlugin extends Plugin {
     protected void handleOnPause() {
         super.handleOnPause();
         Log.d(TAG, "onPause " + getIntent());
+
         stopNfc();
     }
 
@@ -80,17 +81,15 @@ public class NFCPlugin extends Plugin {
     protected void handleOnResume() {
         super.handleOnResume();
         Log.d(TAG, "onResume " + getIntent());
-        startNfc();
 
-        // TEST
-        // startScan(null);
+        startNfc();
     }
 
     @Override
     protected void handleOnNewIntent(Intent intent) {
         super.handleOnNewIntent(intent);
-
         Log.d(TAG, "onNewIntent " + intent);
+
         setIntent(intent);
         savedIntent = intent;
         handleIntent();
@@ -102,24 +101,51 @@ public class NFCPlugin extends Plugin {
     @PluginMethod()
     @SuppressWarnings("MissingPermission")
     public void startScan(PluginCall call) {
+        String nfcStatus = this.getNfcStatus();
+
+        // NFC is disabled, show settings
+        if (nfcStatus.equals(STATUS_NFC_DISABLED)) {
+            this.showSettings(call);
+
+            if (call != null) {
+                call.reject(MESSAGE_NFC_DISABLED);
+            }
+            return;
+        }
+
+        if (!nfcStatus.equals(STATUS_NFC_OK)) {
+            if (call != null) {
+                call.reject(MESSAGE_NO_NFC);
+            }
+            return;
+        }
+
         saveCall(call);
         settings = getSettings(call);
 
-        addTagFilter();
+        // TAG_DISCOVERED
+        intentFilters.add(new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED));
 
         if (settings.techEnabled()) {
-            addTechFilter();
+            intentFilters.add(new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED));
             techLists.add(new String[] { "android.nfc.tech.NfcA" });
         }
 
         if (settings.ndefEnabled()) {
+            IntentFilter intentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+
+            try {
+                intentFilter.addDataType("*/*");
+            } catch (IntentFilter.MalformedMimeTypeException e) {
+                e.printStackTrace();
+            }
+
             techLists.add(new String[] { "android.nfc.tech.NfcA" });
             techLists.add(new String[] { Ndef.class.getName() });
-            // techLists.add(new String[]{MifareUltralight.class.getName()});
-        }
 
-        if (settings.ddefFormattableEnabled()) {
-            addTechList(new String[] { NdefFormatable.class.getName() });
+            if (settings.ndefFormattableEnabled()) {
+                techLists.add(new String[] { NdefFormatable.class.getName() });
+            }
         }
 
         restartNfc();
@@ -133,6 +159,12 @@ public class NFCPlugin extends Plugin {
     public void stopScan(PluginCall call) {
         removeTagFilter();
         removeTechFilter();
+
+        if (settings.ndefEnabled()) {
+            removeIntentFilter("*/*");
+            this.removeFromTechList(new String[] { Ndef.class.getName() });
+        }
+
         stopNfc();
 
         if (call != null) {
@@ -194,13 +226,11 @@ public class NFCPlugin extends Plugin {
     }
 
     private void handleIntent() {
-        Log.d(TAG, "parseMessage " + getIntent());
         Intent intent = getIntent();
         String action = intent.getAction();
-        Log.d(TAG, "action " + action);
-        if (action == null) {
+
+        if (action == null)
             return;
-        }
 
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
         NfcTag nfcTag = new NfcTag(tag);
@@ -225,7 +255,7 @@ public class NFCPlugin extends Plugin {
         }
 
         if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
-            sendEvent(NfcAdapter.ACTION_TAG_DISCOVERED, tag);
+            sendEvent(EVENT_TAG_DISCOVERED, tag);
         }
 
         setIntent(new Intent());
@@ -270,13 +300,12 @@ public class NFCPlugin extends Plugin {
     private void sendEvent(String action, Tag tag) {
         PluginCall call = getSavedCall();
 
-        JSObject r = new JSObject();
-        r.put("type", action);
-        r.put("tagId", tag.getId());
+        JSObject data = new JSObject();
+        data.put("type", action);
+        data.put("tagId", tag.getId());
 
         if (call != null) {
-            // call.resolve(r);
-            notifyListeners(action, r);
+            notifyListeners("tagDiscovered", data);
         }
     }
 
@@ -293,8 +322,7 @@ public class NFCPlugin extends Plugin {
                     try {
                         IntentFilter[] intentFilters = getIntentFilters();
                         String[][] techLists = getTechLists();
-                        // don't start NFC unless some intent filters or tech lists have been added,
-                        // because empty lists act as wildcards and receives ALL scan events
+
                         if (intentFilters.length > 0 || techLists.length > 0) {
                             nfcAdapter.enableForegroundDispatch(getActivity(), getPendingIntent(), intentFilters,
                                     techLists);
@@ -349,53 +377,12 @@ public class NFCPlugin extends Plugin {
 
     // <editor-fold desc="NFC Tech">
 
-    private IntentFilter addNdefDiscoveredFilter(String mimeType) {
-        IntentFilter intentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-
-        try {
-            intentFilter.addDataType(mimeType);
-        } catch (IntentFilter.MalformedMimeTypeException e) {
-            throw new RuntimeException("fail", e);
-        }
-
-        return intentFilter;
-    }
-
-    private void addTagFilter() {
-        intentFilters.add(new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED));
-    }
-
-    private void addTechFilter() {
-        intentFilters.add(new IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED));
-    }
-
-    private void addTechList(String[] list) {
-        this.addTechFilter();
-        techLists.add(list);
-    }
-
-    private IntentFilter createIntentFilter(String mimeType) throws IntentFilter.MalformedMimeTypeException {
-        IntentFilter intentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
-        intentFilter.addDataType(mimeType);
-        return intentFilter;
-    }
-
     private IntentFilter[] getIntentFilters() {
         return intentFilters.toArray(new IntentFilter[intentFilters.size()]);
     }
 
     private String[][] getTechLists() {
         return techLists.toArray(new String[0][0]);
-    }
-
-    private void registerNdef(PluginCall call) {
-        addTechList(new String[] { Ndef.class.getName() });
-        restartNfc();
-    }
-
-    private void removeNdef(PluginCall call) {
-        removeTechList(new String[] { Ndef.class.getName() });
-        restartNfc();
     }
 
     private void removeIntentFilter(String mimeType) {
@@ -427,11 +414,6 @@ public class NFCPlugin extends Plugin {
                 iterator.remove();
             }
         }
-    }
-
-    private void removeTechList(String[] list) {
-        this.removeTechFilter();
-        this.removeFromTechList(list);
     }
 
     private void removeFromTechList(String[] techs) {
