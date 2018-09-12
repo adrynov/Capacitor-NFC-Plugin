@@ -1,8 +1,5 @@
 /**
  *
- Pending items:
-
-    Instance Members
     beginSession(onSuccess, onFailure)
     Starts the NFCNDEFReaderSession allowing iOS to scan NFC tags.
 
@@ -11,38 +8,8 @@
     onFailure
     Returns: Observable<any>
 
-    addNdefListener(onSuccess, onFailure)
-    Registers an event listener for any NDEF tag.
-
-    Param	Type	Details
-    onSuccess
-    onFailure
-    Returns: Observable<any>
-
-    addTagDiscoveredListener(onSuccess, onFailure)
-    Registers an event listener for tags matching any tag type.
-
-    Param	Type	Details
-    onSuccess
-    onFailure
-    Returns: Observable<any>
-
     addMimeTypeListener(mimeType, onSuccess, onFailure)
     Registers an event listener for NDEF tags matching a specified MIME type.
-
-    Param	Type	Details
-    mimeType
-    onSuccess
-    onFailure
-    Returns: Observable<any>
-
-    addNdefFormatableListener(onSuccess, onFailure)
-    Registers an event listener for formatable NDEF tags.
-
-    Param	Type	Details
-    onSuccess
-    onFailure
-    Returns: Observable<any>
 
     write(message)
     Writes an NdefMessage(array of ndef records) to a NFC tag.
@@ -105,8 +72,8 @@
     str	string
     Returns: number[]
 
-    bytesToHexString(bytes)
-    Convert byte array to hex string
+    (bytes)
+
 
  */
 //# sourceMappingURL=definitions.js.map

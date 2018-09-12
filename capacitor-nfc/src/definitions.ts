@@ -1,3 +1,5 @@
+import { PluginListenerHandle } from '@capacitor/core';
+
 declare global {
   interface PluginRegistry {
     NFC?: NFCPlugin;
@@ -16,11 +18,6 @@ declare global {
  * This plugin uses NDEF (NFC Data Exchange Format) for maximum compatibilty between NFC devices, tag types, and operating systems.
  */
 export interface NFCPlugin {
-  /**
-   * Simply returns a value that it was given.
-   * Learning how to create a Capacitor plugin.
-   */
-  echo(options: { value: string }): Promise<{ value: string }>;
 
   /**
    * Query the current NFC status.
@@ -28,39 +25,96 @@ export interface NFCPlugin {
   getStatus(): Promise<NfcStatus>;
 
   /**
-   * Return information about the underlying tag technology.
-   */
-  getTagInfo(): Promise<TagInfo>;
-
-  /**
    * Opens the device’s NFC settings.
    */
   showSettings(): Promise<void>;
 
+  /**
+   * Start scanning.
+   */
+  startScan(options: NfcOptions): Promise<void>;
+
+  /**
+   * Stops scanning.
+   */
+  stopScan(): Promise<void>;
+
+  /**
+  * Listen for TAG_DISCOVERED events.
+  */
+  addListener(eventName: 'tagDiscovered', listenerFunc: (tag: NfcTag) => void): PluginListenerHandle;
+
+  // addListener(eventName: 'ndefScanned', listenerFunc: (ndf: NdefTag) => void): PluginListenerHandle;
 }
+
+export interface NfcOptions {
+
+  /**
+   * Scan tags that contain NDEF data that cannot be mapped to a MIME type or URI,
+   * or if the tag does not contain NDEF data but is of a known tag technology
+   */
+  enableTech?: boolean;
+
+  /**
+   * Scan tags that contain an NDEF payload.
+   */
+  enableNdef?: boolean;
+
+  /**
+   * Scan NDEF-formattable tags.
+   */
+  enableNdefFormattable?: boolean;
+}
+
+// export interface NdefRecord {
+//   id: any[];
+//   payload: number[];
+//   tnf: number;
+//   type: number[];
+// }
+
+// export interface NdefTag {
+//   canMakeReadOnly: boolean;
+//   id: number[];
+//   isWriteable: boolean;
+//   maxSize: number;
+//   ndefMessage: NdefRecord[];
+//   techTypes: string[];
+//   type: string;
+// }
+
+// export interface NdefEvent {
+//   tag: NdefTag;
+// }
 
 export interface NfcStatus {
   status: 'ok' | 'disabled' | 'none';
 }
 
-export interface TagInfo {
+export interface NfcTag {
   /**
-  * The UUID of the attached NFC tag.
+  * UUID of the attached NFC tag.
   */
-  id: string;
+  tagId: string;
+
+  /**
+   * Tag type: TAG_DEFAULT, NDEF, NDEF_MIME, NDEF_FORMATABLE.
+   */
+  type: string;
 
   /**
   * The manufacturer of the NFC tag.
   */
   manufacturer?: string;
-}
 
+  /**
+   * List of NFC technologies that the tag supports.
+   */
+  techList?: string[];
+}
 
 /**
  *
- Pending items:
-
-    Instance Members
     beginSession(onSuccess, onFailure)
     Starts the NFCNDEFReaderSession allowing iOS to scan NFC tags.
 
@@ -69,38 +123,8 @@ export interface TagInfo {
     onFailure
     Returns: Observable<any>
 
-    addNdefListener(onSuccess, onFailure)
-    Registers an event listener for any NDEF tag.
-
-    Param	Type	Details
-    onSuccess
-    onFailure
-    Returns: Observable<any>
-
-    addTagDiscoveredListener(onSuccess, onFailure)
-    Registers an event listener for tags matching any tag type.
-
-    Param	Type	Details
-    onSuccess
-    onFailure
-    Returns: Observable<any>
-
     addMimeTypeListener(mimeType, onSuccess, onFailure)
     Registers an event listener for NDEF tags matching a specified MIME type.
-
-    Param	Type	Details
-    mimeType
-    onSuccess
-    onFailure
-    Returns: Observable<any>
-
-    addNdefFormatableListener(onSuccess, onFailure)
-    Registers an event listener for formatable NDEF tags.
-
-    Param	Type	Details
-    onSuccess
-    onFailure
-    Returns: Observable<any>
 
     write(message)
     Writes an NdefMessage(array of ndef records) to a NFC tag.
@@ -163,7 +187,7 @@ export interface TagInfo {
     str	string
     Returns: number[]
 
-    bytesToHexString(bytes)
-    Convert byte array to hex string
+    (bytes)
+
 
  */

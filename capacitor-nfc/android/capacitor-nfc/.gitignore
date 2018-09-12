@@ -1,58 +1,59 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 
-/.gradle
-/.settings
-/build
-
-*~
-*.sw[mnpcod]
-*.log
-*.tmp
-*.tmp.*
-log.txt
-*.sublime-project
-*.sublime-workspace
-.vscode/
-npm-debug.log*
-
+.gradle/
 .idea/
-.ionic/
-.sourcemaps/
-.sass-cache/
-.tmp/
-.versions/
+.settings/
+build/
 
-# Specifies intentionally untracked files to ignore when using Git
-# http://git-scm.com/docs/gitignore
+# *~
+# *.sw[mnpcod]
+# *.log
+# *.tmp
+# *.tmp.*
+# log.txt
+# *.sublime-project
+# *.sublime-workspace
+# .vscode/
+# npm-debug.log*
 
-# android/*.iml
-.gradle
-local.properties
-.idea
-.DS_Store
+#
+# .ionic/
+# .sourcemaps/
+# .sass-cache/
+# .tmp/
+# .versions/
 
-/captures
-/.externalNativeBuild
+# # Specifies intentionally untracked files to ignore when using Git
+# # http://git-scm.com/docs/gitignore
 
-android/app/src/main/assets/public/
+# # android/*.iml
+# .gradle
+# local.properties
+# .idea
+# .DS_Store
 
-.idea/
-.sourcemaps/
-.sass-cache/
-.tmp/
-.versions/
-coverage/
-www/
-node_modules/
-tmp/
-temp/
-platforms/
-plugins/
-plugins/android.json
-plugins/ios.json
-$RECYCLE.BIN/
+# /captures
+# /.externalNativeBuild
 
-.DS_Store
-Thumbs.db
-UserInterfaceState.xcuserstate
+# android/app/src/main/assets/public/
+
+# .idea/
+# .sourcemaps/
+# .sass-cache/
+# .tmp/
+# .versions/
+# coverage/
+# www/
+# node_modules/
+# tmp/
+# temp/
+# platforms/
+# plugins/
+# plugins/android.json
+# plugins/ios.json
+# $RECYCLE.BIN/
+
+# .DS_Store
+# Thumbs.db
+# UserInterfaceState.xcuserstate
