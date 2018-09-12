@@ -26,8 +26,9 @@ import java.util.List;
 
 /**
  * This NFC plugin allows to read (and in future write) NFC tags.
+ * Version 0.0.9
  */
-@NativePlugin(permissions = {Manifest.permission.NFC})
+@NativePlugin(permissions = { Manifest.permission.NFC })
 public class NFCPlugin extends Plugin {
 
     private static final String TAG = NFCPlugin.class.getSimpleName();
@@ -108,17 +109,17 @@ public class NFCPlugin extends Plugin {
 
         if (settings.techEnabled()) {
             addTechFilter();
-            techLists.add(new String[]{"android.nfc.tech.NfcA"});
+            techLists.add(new String[] { "android.nfc.tech.NfcA" });
         }
 
         if (settings.ndefEnabled()) {
-            techLists.add(new String[]{"android.nfc.tech.NfcA"});
-            techLists.add(new String[]{Ndef.class.getName()});
-//            techLists.add(new String[]{MifareUltralight.class.getName()});
+            techLists.add(new String[] { "android.nfc.tech.NfcA" });
+            techLists.add(new String[] { Ndef.class.getName() });
+            // techLists.add(new String[]{MifareUltralight.class.getName()});
         }
 
         if (settings.ddefFormattableEnabled()) {
-            addTechList(new String[]{NdefFormatable.class.getName()});
+            addTechList(new String[] { NdefFormatable.class.getName() });
         }
 
         restartNfc();
@@ -205,21 +206,22 @@ public class NFCPlugin extends Plugin {
         NfcTag nfcTag = new NfcTag(tag);
 
         if (action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-//            Ndef ndef = Ndef.get(tag);
-//            Parcelable[] messages = intent.getParcelableArrayExtra((NfcAdapter.EXTRA_NDEF_MESSAGES));
-//            fireNdefEvent(NDEF_MIME, ndef, messages);
+            // Ndef ndef = Ndef.get(tag);
+            // Parcelable[] messages =
+            // intent.getParcelableArrayExtra((NfcAdapter.EXTRA_NDEF_MESSAGES));
+            // fireNdefEvent(NDEF_MIME, ndef, messages);
         }
 
         if (action.equals(NfcAdapter.ACTION_TECH_DISCOVERED)) {
-//            for (String tagTech : tag.getTechList()) {
-//                Log.d(TAG, tagTech);
-//                if (tagTech.equals(NdefFormatable.class.getName())) {
-//                    fireNdefFormatableEvent(tag);
-//                } else if (tagTech.equals(Ndef.class.getName())) { //
-//                    Ndef ndef = Ndef.get(tag);
-//                    fireNdefEvent(NDEF, ndef, messages);
-//                }
-//            }
+            // for (String tagTech : tag.getTechList()) {
+            // Log.d(TAG, tagTech);
+            // if (tagTech.equals(NdefFormatable.class.getName())) {
+            // fireNdefFormatableEvent(tag);
+            // } else if (tagTech.equals(Ndef.class.getName())) { //
+            // Ndef ndef = Ndef.get(tag);
+            // fireNdefEvent(NDEF, ndef, messages);
+            // }
+            // }
         }
 
         if (action.equals(NfcAdapter.ACTION_TAG_DISCOVERED)) {
@@ -243,20 +245,24 @@ public class NFCPlugin extends Plugin {
             settings.setNdefEnabled(false);
             settings.setNdefFormattableEnabled(false);
         }
-//
-//        settings.setResultType(getResultType(call.getString("resultType")));
-//        settings.setSaveToGallery(call.getBoolean("saveToGallery", CameraSettings.DEFAULT_SAVE_IMAGE_TO_GALLERY));
-//        settings.setAllowEditing(call.getBoolean("allowEditing", false));
-//        settings.setQuality(call.getInt("quality", CameraSettings.DEFAULT_QUALITY));
-//        settings.setWidth(call.getInt("width", 0));
-//        settings.setHeight(call.getInt("height", 0));
-//        settings.setShouldResize(settings.getWidth() > 0 || settings.getHeight() > 0);
-//        settings.setShouldCorrectOrientation(call.getBoolean("correctOrientation", CameraSettings.DEFAULT_CORRECT_ORIENTATION));
-//        try {
-//            settings.setSource(CameraSource.valueOf(call.getString("source", CameraSource.PROMPT.getSource())));
-//        } catch (IllegalArgumentException ex) {
-//            settings.setSource(CameraSource.PROMPT);
-//        }
+        //
+        // settings.setResultType(getResultType(call.getString("resultType")));
+        // settings.setSaveToGallery(call.getBoolean("saveToGallery",
+        // CameraSettings.DEFAULT_SAVE_IMAGE_TO_GALLERY));
+        // settings.setAllowEditing(call.getBoolean("allowEditing", false));
+        // settings.setQuality(call.getInt("quality", CameraSettings.DEFAULT_QUALITY));
+        // settings.setWidth(call.getInt("width", 0));
+        // settings.setHeight(call.getInt("height", 0));
+        // settings.setShouldResize(settings.getWidth() > 0 || settings.getHeight() >
+        // 0);
+        // settings.setShouldCorrectOrientation(call.getBoolean("correctOrientation",
+        // CameraSettings.DEFAULT_CORRECT_ORIENTATION));
+        // try {
+        // settings.setSource(CameraSource.valueOf(call.getString("source",
+        // CameraSource.PROMPT.getSource())));
+        // } catch (IllegalArgumentException ex) {
+        // settings.setSource(CameraSource.PROMPT);
+        // }
 
         return settings;
     }
@@ -269,7 +275,8 @@ public class NFCPlugin extends Plugin {
         r.put("tagId", tag.getId());
 
         if (call != null) {
-            call.resolve(r);
+            // call.resolve(r);
+            notifyListeners(action, r);
         }
     }
 
@@ -289,7 +296,8 @@ public class NFCPlugin extends Plugin {
                         // don't start NFC unless some intent filters or tech lists have been added,
                         // because empty lists act as wildcards and receives ALL scan events
                         if (intentFilters.length > 0 || techLists.length > 0) {
-                            nfcAdapter.enableForegroundDispatch(getActivity(), getPendingIntent(), intentFilters, techLists);
+                            nfcAdapter.enableForegroundDispatch(getActivity(), getPendingIntent(), intentFilters,
+                                    techLists);
                         }
 
                     } catch (IllegalStateException e) {
@@ -339,7 +347,7 @@ public class NFCPlugin extends Plugin {
         getActivity().setIntent(intent);
     }
 
-    //<editor-fold desc="NFC Tech">
+    // <editor-fold desc="NFC Tech">
 
     private IntentFilter addNdefDiscoveredFilter(String mimeType) {
         IntentFilter intentFilter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
@@ -381,12 +389,12 @@ public class NFCPlugin extends Plugin {
     }
 
     private void registerNdef(PluginCall call) {
-        addTechList(new String[]{Ndef.class.getName()});
+        addTechList(new String[] { Ndef.class.getName() });
         restartNfc();
     }
 
     private void removeNdef(PluginCall call) {
-        removeTechList(new String[]{Ndef.class.getName()});
+        removeTechList(new String[] { Ndef.class.getName() });
         restartNfc();
     }
 
@@ -436,6 +444,6 @@ public class NFCPlugin extends Plugin {
         }
     }
 
-    //</editor-fold>
+    // </editor-fold>
 
 }
