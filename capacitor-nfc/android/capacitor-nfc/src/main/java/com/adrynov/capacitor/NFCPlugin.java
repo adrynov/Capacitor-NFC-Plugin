@@ -82,7 +82,7 @@ public class NFCPlugin extends Plugin {
         startNfc();
 
         // TEST
-        startScan(null);
+        // startScan(null);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class NFCPlugin extends Plugin {
 
                     } catch (IllegalStateException e) {
                         // issue 110 - user exits app with home button while nfc is initializing
-                        Log.w(TAG, "Illegal State Exception starting NFC. Assuming application is terminating.");
+                        Log.w(TAG, e);
                     }
 
                 }
@@ -314,8 +314,7 @@ public class NFCPlugin extends Plugin {
                     try {
                         nfcAdapter.disableForegroundDispatch(getActivity());
                     } catch (IllegalStateException e) {
-                        // issue 125 - user exits app with back button while nfc
-                        Log.w(TAG, "Illegal State Exception stopping NFC. Assuming application is terminating.");
+                        Log.w(TAG, e);
                     }
                 }
             }
@@ -328,11 +327,6 @@ public class NFCPlugin extends Plugin {
         this.startNfc();
     }
 
-    //    private Activity getActivity() {
-////        return getBridge().getActivity();
-//        return MainActivity.class;
-//    }
-//
     private Intent getIntent() {
         return getActivity().getIntent();
     }
