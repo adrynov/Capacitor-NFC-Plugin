@@ -7,7 +7,8 @@ Supported Platforms
 -------------------
 
 * Android
-* (TODO) iOS
+
+Sorry, I do not have nor plan to acquire an iPhone. iOS contributions are welcome.
 
 
 ## showSettings
