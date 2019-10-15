@@ -1,7 +1,7 @@
 Capacitor NFC Plugin
 ==========================
 
-Read and write NFC tags in your Capacitor app.
+Read NFC tags.
 
 Supported Platforms
 -------------------
@@ -11,12 +11,38 @@ Supported Platforms
 Sorry, I do not have nor plan to acquire an iPhone. iOS contributions are welcome.
 
 
-## showSettings
+### Supported Platforms
+
+- Android
+
+### Android Notes
+
+This API requires the following permission be added to your AndroidManifest.xml:
+
+```xml
+<uses-permission android:name="android.permission.NFC" />
+<uses-feature android:name="android.hardware.nfc" android:required="true" />
+```
+
+## Example
+
+
+```js
+import { Plugins } from '@capacitor/core';
+const { NFC } = Plugins;
+
+class NFCExample {
+  async getCurrentPosition() {
+    const coordinates = await Geolocation.getCurrentPosition();
+    console.log('Current', coordinates);
+  }
+}
+```
+
+### API
+
+#### showSettings
 
 Show the NFC settings on the device.
 
     NFC.showSettings();
-
-### Supported Platforms
-
-- Android

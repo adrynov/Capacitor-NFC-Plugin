@@ -1,9 +1,8 @@
 declare module "@capacitor/core" {
-  interface PluginRegistry {
-    NFC: NFCPlugin;
-  }
+    interface PluginRegistry {
+        NFC: NFCPlugin;
+    }
 }
-
 /**
  * The NFC plugin allows you to read NFC tags.
  *
@@ -16,10 +15,15 @@ declare module "@capacitor/core" {
  * - receive data from NFC devices
  */
 export interface NFCPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
-
-  /**
-   * Checks whether NFC is enabled and turned on
-   */
-  isNfcAvailable(): Promise<{ enabled: boolean }>;
+    echo(options: {
+        value: string;
+    }): Promise<{
+        value: string;
+    }>;
+    /**
+     * Checks whether NFC is enabled and turned on
+     */
+    isNfcAvailable(): Promise<{
+        enabled: boolean;
+    }>;
 }
