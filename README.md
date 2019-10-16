@@ -32,9 +32,8 @@ import { Plugins } from '@capacitor/core';
 const { NFC } = Plugins;
 
 class NFCExample {
-  async getCurrentPosition() {
-    const coordinates = await Geolocation.getCurrentPosition();
-    console.log('Current', coordinates);
+  async enableNfc() {
+    // TODO
   }
 }
 ```

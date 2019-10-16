@@ -1,0 +1,8 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "SampleApp",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "linuxAndroidStudioPath": "/opt/android-studio/bin/studio.sh"
+}
