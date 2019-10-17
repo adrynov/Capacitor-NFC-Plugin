@@ -1,25 +1,19 @@
-// export type NfcTagScanCallback = (status: someStatus) => void;
-
 export interface NfcSettings {
     /**
      * Scan tags that contain NDEF data that cannot be mapped to a MIME type or URI,
      * or if the tag does not contain NDEF data but is of a known tag technology
      */
     techEnabled?: boolean;
-
     /**
      * Allows to scan tags that contain NDEF payload.
      */
     ndefEnabled?: boolean;
-
     /**
      * Allows to scan NDEF-formattable tags.
      */
     ndefFormattable?: boolean;
 }
-
-export type NfcStatus = 'enabled' | 'disabled' | 'none';
-
+export declare type NfcStatus = 'enabled' | 'disabled' | 'none';
 export interface NfcTag {
     /**
     * NFC chips have a manufacturer supplied unique identifier that can be read by most NFC devices.
@@ -27,7 +21,6 @@ export interface NfcTag {
     * Usually this UID is 7 bytes.
     */
     tagId: string;
-
     /**
      * NFC tag type formats are based on ISO 14443 Types A and B and Sony FeliCa which conforms to ISO 18092.0
      *
@@ -62,15 +55,12 @@ export interface NfcTag {
      * The Mifare Classic are not included in the NFC standard.
      */
     type: 'default' | 'ntag' | 'type1' | 'type2' | 'type3' | 'type4';
-
     /**
     * The manufacturer of the NFC tag.
     */
     manufacturer?: string;
-
     /**
      * List of NFC technologies that the tag supports.
      */
     techList?: string[];
 }
-

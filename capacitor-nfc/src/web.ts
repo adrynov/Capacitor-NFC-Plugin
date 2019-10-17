@@ -1,7 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 import { NFCPlugin } from './definitions';
-
-// declare var navigator: any;
+import { NfcTag, NfcStatus, NfcSettings } from './models';
 
 export class NFCPluginWeb extends WebPlugin implements NFCPlugin {
 
@@ -12,21 +11,24 @@ export class NFCPluginWeb extends WebPlugin implements NFCPlugin {
     });
   }
 
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    return new Promise((resolve) => {
-      console.log('Hello World from NFC plugin', options);
-      resolve(options);
-    })
+  getTagInfo(): Promise<NfcTag> {
+    const tag: NfcTag = { tagId: '043A98CAB32B80', type: 'default' };
+    return Promise.resolve(tag);
   }
 
-  isNfcAvailable(): Promise<{ enabled: boolean; }> {
-    debugger;
-    return Promise.resolve({ enabled: true });
+  getStatus(): Promise<{ status: NfcStatus; }> {
+    console.debug('NFC is not supported in the browser');
+    return Promise.resolve({ status: 'none' });
   }
 
-  // showSettings(): Promise<void> {
-  //   return Promise.resolve();
-  // }
+  startScanning(options?: NfcSettings): Promise<void> {
+    console.log('Options', options);
+    return Promise.resolve();
+  }
+
+  showSettings(): Promise<void> {
+    return Promise.reject('NFC not supported in the browser');
+  }
 
 }
 

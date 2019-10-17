@@ -1,15 +1,14 @@
 import { WebPlugin } from '@capacitor/core';
 import { NFCPlugin } from './definitions';
+import { NfcTag, NfcStatus, NfcSettings } from './models';
 export declare class NFCPluginWeb extends WebPlugin implements NFCPlugin {
     constructor();
-    echo(options: {
-        value: string;
-    }): Promise<{
-        value: string;
+    getTagInfo(): Promise<NfcTag>;
+    getStatus(): Promise<{
+        status: NfcStatus;
     }>;
-    isNfcAvailable(): Promise<{
-        enabled: boolean;
-    }>;
+    startScanning(options?: NfcSettings): Promise<void>;
+    showSettings(): Promise<void>;
 }
 declare const NFC: NFCPluginWeb;
 export { NFC };
