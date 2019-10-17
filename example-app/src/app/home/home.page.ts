@@ -12,8 +12,12 @@ export class HomePage {
 
   constructor() {
     if (Capacitor.isPluginAvailable('NFC')) {
-      console.log('NFC is enabled', NFC.isNfcEnabled());
-      NFC.showSettings();
+      const status = NFC.getStatus();
+      console.log('NFC is enabled', status);
+
+      if (status !== 'enabled') {
+        NFC.showSettings();
+      }
     }
   }
 
