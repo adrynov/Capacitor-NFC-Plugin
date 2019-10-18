@@ -1,22 +1,62 @@
 Capacitor NFC Plugin
 ==========================
 
-Read and write NFC tags in your Capacitor app.
+Read NFC tags.
 
-Supported Platforms
--------------------
+## Supported Platforms
 
 * Android
+* <del>iOS</del> (Sorry, I do not have nor plan to acquire an iPhone. iOS contributions are welcome.)
 
-Sorry, I do not have nor plan to acquire an iPhone. iOS contributions are welcome.
+
+### Android Notes
+
+This API requires the following permission be added to your AndroidManifest.xml:
+
+```xml
+<uses-permission android:name="android.permission.NFC" />
+<uses-feature android:name="android.hardware.nfc" android:required="true" />
+```
+
+## Example
 
 
-## showSettings
+```js
+import { Plugins } from '@capacitor/core';
+const { NFC } = Plugins;
 
-Show the NFC settings on the device.
+class NFCExample {
 
-    NFC.showSettings();
+  async checkNfcStatus() {
+     if (Capacitor.isPluginAvailable('NFC')) {
+      const status = NFC.getStatus();
+      console.log('NFC is enabled', status);
 
-### Supported Platforms
+      if (status !== 'enabled') {
+        NFC.showSettings();
+      }
+    }
+  }
 
-- Android
+}
+```
+
+## API
+
+**getStatus**
+
+Checks whether NFC is enabled and turned on.
+
+**getTagInfo**
+
+Returns information about the touched NFC tag. TODO
+
+**showSettings**
+
+Returns information about the touched NFC tag.
+
+Opens a settings page to allow the user to enable NFC.
+
+```js
+NFC.showSettings();
+```

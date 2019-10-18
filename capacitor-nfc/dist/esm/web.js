@@ -1,6 +1,4 @@
 import { WebPlugin } from '@capacitor/core';
-// import { uuid4 } from './utils';
-// declare var navigator: any;
 export class NFCPluginWeb extends WebPlugin {
     constructor() {
         super({
@@ -8,34 +6,27 @@ export class NFCPluginWeb extends WebPlugin {
             platforms: ['web']
         });
     }
-    startScan(options) {
-        console.log('NFC options', options);
-        return Promise.resolve();
-    }
-    stopScan() {
-        return Promise.resolve();
+    getTagInfo() {
+        const tag = {
+            tagId: '043A98CAB32B80',
+            type: 'default'
+        };
+        return Promise.resolve(tag);
     }
     getStatus() {
-        return Promise.resolve('none');
+        console.debug('NFC is not supported in the browser');
+        return Promise.resolve({ status: 'none' });
     }
-    // getTagInfo(): Promise<NfcTag> {
-    //     return Promise.resolve({
-    //         tagId: this.getTagIt(),
-    //         manufacturer: navigator.vendor,
-    //         techList: ['web'],
-    //         type: 'TAG_DISCOVERED'
-    //     });
-    // }
-    showSettings() {
+    startScanning(options) {
+        console.log('Options', options);
         return Promise.resolve();
+    }
+    showSettings() {
+        return Promise.reject('NFC not supported in the browser');
     }
 }
 const NFC = new NFCPluginWeb();
 export { NFC };
-// export class NFCWeb extends WebPlugin implements  {
-//   async echo(options: { value: string }): Promise<{value: string}> {
-//     console.log('ECHO', options);
-//     return Promise.resolve({ value: options.value });
-//   }
-// }
+import { registerWebPlugin } from '@capacitor/core';
+registerWebPlugin(NFC);
 //# sourceMappingURL=web.js.map
