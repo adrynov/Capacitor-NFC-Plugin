@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
+import android.nfc.Tag
 import android.nfc.tech.NfcA
 import android.util.Log
 import com.getcapacitor.*
@@ -29,7 +30,7 @@ class NFC : Plugin(), CoroutineScope by MainScope() {
 
     private val TAG = NFC::class.java.simpleName
 
-    private val PERMISSION_NOT_SET = Manifest.permission.NFC + " permission is not set in AndroidManifest.xml"
+    private val PERMISSION_NOT_SET = Manifest.permission.NFC + " permission is not set"
 
     private val NFC_REQUEST_PERMISSIONS = 9020
 
@@ -110,7 +111,7 @@ class NFC : Plugin(), CoroutineScope by MainScope() {
 
         grantResults.forEach {
             if (it == PackageManager.PERMISSION_DENIED) {
-                savedCall.error("User denied NFC permission")
+                savedCall.error(PERMISSION_NOT_SET)
                 return
             }
         }
@@ -337,19 +338,13 @@ class NFC : Plugin(), CoroutineScope by MainScope() {
 
         val callingActivity = this.bridge.activity
 
-        try {
-            nfcAdapter?.disableForegroundDispatch(callingActivity)
-        } catch (e: IllegalStateException) {
-            Log.w(TAG, e)
+        callingActivity.runOnUiThread {
+            try {
+                nfcAdapter?.disableForegroundDispatch(callingActivity)
+            } catch (e: IllegalStateException) {
+                Log.w(TAG, e)
+            }
         }
-
-//        callingActivity.runOnUiThread {
-//            try {
-//                nfcAdapter?.disableForegroundDispatch(callingActivity)
-//            } catch (e: IllegalStateException) {
-//                Log.w(TAG, e)
-//            }
-//        }
     }
 
     private fun restartForegroundDispatch() {
@@ -406,6 +401,50 @@ class NFC : Plugin(), CoroutineScope by MainScope() {
 //            }
 //        }
     }
+
+//    private void removeIntentFilter(String mimeType) {
+//        Iterator<IntentFilter> iterator = intentFilters.iterator()
+//        while (iterator.hasNext()) {
+//            IntentFilter intentFilter = iterator.next()
+//            String mt = intentFilter.getDataType(0)
+//            if (mimeType.equals(mt)) {
+//                iterator.remove()
+//            }
+//        }
+//    }
+
+//    private void removeFromTechList(String[] techs) {
+//        Iterator<String[]> iterator = techLists.iterator()
+//        while (iterator.hasNext()) {
+//            String[] list = iterator.next()
+//            if (Arrays.equals(list, techs)) {
+//                iterator.remove()
+//            }
+//        }
+//    }
+
+    private fun sendEvent(action: String, tag: Tag) {
+        val data = JSObject()
+        data.put("type", action)
+        data.put("tagId", tag.getId())
+
+        if (savedCall != null) {
+            notifyListeners("tagDiscovered", data)
+        }
+    }
+
+// private fun receiveMessageFromDevice(intent: Intent) {
+//    val action = intent.action
+//    if (NfcAdapter.ACTION_NDEF_DISCOVERED == action) {
+//        val parcelables = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+//        with(parcelables) {
+//            val inNdefMessage = this[0] as NdefMessage
+//            val inNdefRecords = inNdefMessage.records
+//            val ndefRecord_0 = inNdefRecords[0]
+//            val inMessage = String(ndefRecord_0.payload)
+//        }
+//    }
+// }
 
     private fun sendError(error: String) {
         val data = JSObject()
