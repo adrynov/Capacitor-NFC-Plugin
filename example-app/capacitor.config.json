@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "SampleApp",
+  "appId": "com.adrynov.capacitor.examples",
+  "appName": "CapacitorExample",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

@@ -22,6 +22,8 @@ declare module "@capacitor/core" {
 export interface NFCPlugin {
   /**
    * Checks whether NFC is enabled and turned on.
+   *
+   * @returns {Promise<NfcStatus>}
    */
   getStatus(): Promise<{ status: NfcStatus }>;
 
@@ -31,7 +33,13 @@ export interface NFCPlugin {
   getTagInfo(): Promise<NfcTag>;
 
   /**
-   * Set up a watch for NFC data.
+   * Set up a watch for Near Field Communication (NFC) tags of types 1 through 5 that contain data in the NFC Data
+   * Exchange Format (NDEF).
+   *
+   * Note: this method does not return any data - when an NFC tag is attached a custom event will be sent instead.
+   *
+   * @todo
+   *
    */
   startScanning(options?: NfcSettings): Promise<void>;
 
@@ -39,4 +47,9 @@ export interface NFCPlugin {
    * Opens a settings page to allow the user to enable NFC.
    */
   showSettings(): Promise<void>;
+
+  /**
+   * @todo write data to tags, and interact with protocol specific tag such as ISO 7816, ISO 15693, FeliCa™, and MIFARE® tags.
+   */
+  writeTag(): Promise<boolean>
 }
