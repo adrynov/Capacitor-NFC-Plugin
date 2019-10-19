@@ -22,8 +22,14 @@ This API requires the following permission be added to your AndroidManifest.xml:
 <uses-feature android:name="android.hardware.nfc" android:required="true" />
 ```
 
-## Example
+### iOS Notes
 
+Specify the reason for your app to use the device’s NFC reader in Info.plist:
+
+Name: Privacy - NFC Scan Usage Description
+Key: NFCReaderUsageDescription
+
+## Example
 
 ```js
 import { Plugins } from '@capacitor/core';

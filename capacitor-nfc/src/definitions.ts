@@ -33,13 +33,8 @@ export interface NFCPlugin {
   getTagInfo(): Promise<NfcTag>;
 
   /**
-   * Set up a watch for Near Field Communication (NFC) tags of types 1 through 5 that contain data in the NFC Data
-   * Exchange Format (NDEF).
-   *
-   * Note: this method does not return any data - when an NFC tag is attached a custom event will be sent instead.
-   *
+   * Start polling for NFC tags and call the subscribers when it finds tags that contain NDEF messages.]
    * @todo
-   *
    */
   startScanning(options?: NfcSettings): Promise<void>;
 
