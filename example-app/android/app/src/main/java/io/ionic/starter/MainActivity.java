@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.adrynov.capacitor.examples;
 
 import android.os.Bundle;
 

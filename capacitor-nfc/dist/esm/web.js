@@ -7,10 +7,7 @@ export class NFCPluginWeb extends WebPlugin {
         });
     }
     getTagInfo() {
-        const tag = {
-            tagId: '043A98CAB32B80',
-            type: 'default'
-        };
+        const tag = { tagId: '043A98CAB32B80', type: 'default' };
         return Promise.resolve(tag);
     }
     getStatus() {

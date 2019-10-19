@@ -1,7 +1,11 @@
 Capacitor NFC Plugin
 ==========================
 
-Read NFC tags.
+Native [Capacitor](https://capacitor.ionicframework.com/) plugin to read NFC tags.
+
+To install the plugin in your project, run:
+
+`npm install --save capacitor-nfc@latest`
 
 ## Supported Platforms
 
@@ -18,8 +22,14 @@ This API requires the following permission be added to your AndroidManifest.xml:
 <uses-feature android:name="android.hardware.nfc" android:required="true" />
 ```
 
-## Example
+### iOS Notes
 
+Specify the reason for your app to use the device’s NFC reader in Info.plist:
+
+Name: Privacy - NFC Scan Usage Description
+Key: NFCReaderUsageDescription
+
+## Example
 
 ```js
 import { Plugins } from '@capacitor/core';
@@ -49,11 +59,9 @@ Checks whether NFC is enabled and turned on.
 
 **getTagInfo**
 
-Returns information about the touched NFC tag. TODO
+(TODO) Returns information about the touched NFC tag.
 
 **showSettings**
-
-Returns information about the touched NFC tag.
 
 Opens a settings page to allow the user to enable NFC.
 

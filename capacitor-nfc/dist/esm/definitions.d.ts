@@ -1,4 +1,4 @@
-import { NfcTag, NfcStatus, NfcSettings } from './models';
+import { NfcTag, NfcStatus } from './models';
 declare module "@capacitor/core" {
     interface PluginRegistry {
         NFC: NFCPlugin;
@@ -20,6 +20,8 @@ declare module "@capacitor/core" {
 export interface NFCPlugin {
     /**
      * Checks whether NFC is enabled and turned on.
+     *
+     * @returns {Promise<NfcStatus>}
      */
     getStatus(): Promise<{
         status: NfcStatus;
@@ -29,9 +31,9 @@ export interface NFCPlugin {
      */
     getTagInfo(): Promise<NfcTag>;
     /**
-     * Set up a watch for NFC data.
+     * Start polling for NFC tags and call the subscribers when it finds tags that contain NDEF messages.]
+     * @todo
      */
-    startScanning(options?: NfcSettings): Promise<void>;
     /**
      * Opens a settings page to allow the user to enable NFC.
      */
